@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Home, 
   BookOpen, 
@@ -6,10 +5,10 @@ import {
   Users, 
   Target,
   Torus as Torii,
-  GraduationCap,
   Compass,
   Eye,
-  Map
+  Map,
+  Languages
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,10 +19,10 @@ interface SidebarProps {
 const sidebarItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'dojos', label: 'Study Dojos', icon: Target },
-  
   { id: 'course-advisor', label: 'Course Advisor', icon: Compass },
   { id: 'oracles-insight', label: "Oracle's Insight", icon: Eye },
   { id: 'senseis-path', label: "Sensei's Path", icon: Map },
+  { id: 'language-bridge', label: 'Language Bridge', icon: Languages },
   { id: 'memory-palace', label: 'Memory Palace', icon: BookOpen },
   { id: 'progress', label: 'Progress', icon: TrendingUp },
   { id: 'community', label: 'Community', icon: Users },

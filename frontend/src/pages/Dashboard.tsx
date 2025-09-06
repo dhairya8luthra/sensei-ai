@@ -15,6 +15,7 @@ import MemoryPalace from './MemoryPalace';
 import CourseAdvisor from './CourseAdvisor';
 import OraclesInsight from './OraclesInsight';
 import SenseisPath from './SenseisPath';
+import LanguageBridge from './LanguageBridge';
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -124,6 +125,10 @@ export default function Dashboard() {
         return (
           <SenseisPath user={user} />
         );
+      case 'language-bridge':
+        return (
+          <LanguageBridge user={user} />
+        );
       case 'progress':
         return (
           <div className="text-center py-20">
@@ -190,6 +195,7 @@ export default function Dashboard() {
                  activeTab === 'course-advisor' ? 'Course Advisor' :
                  activeTab === 'oracles-insight' ? "Oracle's Insight" :
                  activeTab === 'senseis-path' ? "Sensei's Path" :
+                 activeTab === 'language-bridge' ? 'Language Bridge' :
                  activeTab}
               </h2>
               <p className="text-gray-400 text-sm">
