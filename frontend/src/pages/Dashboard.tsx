@@ -5,16 +5,21 @@ import senseiAnimation from '../data/senseiAnimation.json';
 import StarryBackground from '../components/StarryBackground';
 import ScrollingParticles from '../components/ScrollingParticles';
 import Sidebar from '../components/Sidebar';
-import UserDropdown from '../components/UserDropDown';
+import UserDropdown from '../components/UserDropdown';
 import ActivityGraph from '../components/ActivityGraph';
 import DashboardStats from '../components/DashboardStats';
 import RecentActivity from '../components/RecentActivity';
 import Dojos from './Dojos';
+import DojoSession from './DojoSession';
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [currentDojoSession, setCurrentDojoSession] = useState<{
+    sessionId: string;
+    sessionName: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +36,15 @@ export default function Dashboard() {
     if (hour < 12) return 'Good Morning';
     if (hour < 18) return 'Good Afternoon';
     return 'Good Evening';
+  };
+
+  const handleStartDojoSession = (sessionId: string, sessionName: string) => {
+    setCurrentDojoSession({ sessionId, sessionName });
+  };
+
+  const handleBackToDojos = () => {
+    setCurrentDojoSession(null);
+    setActiveTab('dojos');
   };
 
   const renderContent = () => {
@@ -87,7 +101,7 @@ export default function Dashboard() {
         );
       case 'dojos':
         return (
-          <Dojos user={user} />
+          <Dojos user={user} onStartSession={handleStartDojoSession} />
         );
       case 'library':
         return (
@@ -126,6 +140,18 @@ export default function Dashboard() {
           />
         </div>
       </div>
+    );
+  }
+
+  // Show Dojo Session if one is active
+  if (currentDojoSession) {
+    return (
+      <DojoSession
+        sessionId={currentDojoSession.sessionId}
+        sessionName={currentDojoSession.sessionName}
+        user={user}
+        onBackToDojos={handleBackToDojos}
+      />
     );
   }
 

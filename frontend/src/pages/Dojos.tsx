@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, Plus, Search, Filter, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
@@ -10,14 +10,15 @@ interface DojoSession {
   session_id: string;
   session_name: string;
   created_at: string;
-  status: string;
+  status?: string;
 }
 
 interface DojosProps {
   user: any;
+  onStartSession?: (sessionId: string, sessionName: string) => void;
 }
 
-export default function Dojos({ user }: DojosProps) {
+export default function Dojos({ user, onStartSession }: DojosProps) {
   const [dojos, setDojos] = useState<DojoSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -62,8 +63,11 @@ export default function Dojos({ user }: DojosProps) {
   };
 
   const handleStartSession = (sessionId: string) => {
-    // TODO: Navigate to dojo session page
-    console.log('Starting session:', sessionId);
+    const selectedDojo = dojos.find(dojo => dojo.session_id === sessionId);
+    if (selectedDojo) {
+      // Pass the session data to parent component
+      onStartSession?.(sessionId, selectedDojo.session_name);
+    }
   };
 
   // Filter and search dojos
@@ -195,7 +199,7 @@ export default function Dojos({ user }: DojosProps) {
               <DojoCard
                 key={dojo.session_id}
                 session={dojo}
-               onClick={() => handleStartSession(dojo.session_id)}
+                onClick={() => handleStartSession(dojo.session_id)}
               />
             ))}
           </div>
