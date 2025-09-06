@@ -25,71 +25,79 @@ export default function CreateTrainingModal({
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  if (!trainingTitle.trim()) {
+    setError('Training title is required');
+    return;
+  }
+
+  // Check if we have any content sources
+  const hasFiles = files && files.length > 0;
+  const validLinks = youtubeLinks.filter(link => link.trim());
+  const hasYouTubeLinks = validLinks.length > 0;
+  const hasTextualContext = textualContext.trim().length > 0;
+
+  if (!hasFiles && !hasYouTubeLinks && !hasTextualContext) {
+    setError('At least one content source is required (PDF files, YouTube links, or additional context)');
+    return;
+  }
+
+  setLoading(true);
+  setError('');
+
+  try {
+    const formData = new FormData();
     
-    if (!trainingTitle.trim()) {
-      setError('Training title is required');
-      return;
+    // Add metadata
+    formData.append('sessionId', sessionId);
+    formData.append('userId', user?.id || '');
+    formData.append('trainingTitle', trainingTitle.trim());
+    formData.append('textualContext', textualContext.trim());
+
+    // Add files if any
+    if (hasFiles) {
+      for (let i = 0; i < files!.length; i++) {
+        formData.append('files', files![i]);
+      }
     }
 
-    if (!files || files.length === 0) {
-      setError('At least one PDF file is required');
-      return;
+    // Add YouTube links if any
+    if (hasYouTubeLinks) {
+      formData.append('youtubeLinks', JSON.stringify(validLinks));
     }
 
-    setLoading(true);
-    setError('');
+    console.log('Submitting training with sessionId:', sessionId);
+    console.log('Content sources:', { hasFiles, hasYouTubeLinks, hasTextualContext });
 
-    try {
-      const formData = new FormData();
-      
-      // Add metadata
-      formData.append('sessionId', sessionId);
-      formData.append('userId', user?.id || '');
-      formData.append('trainingTitle', trainingTitle.trim());
-      formData.append('textualContext', textualContext.trim());
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+    const response = await fetch(`${backendUrl}/api/generate-mcq`, {
+      method: 'POST',
+      body: formData
+    });
 
-      // Add files
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
+    const data = await response.json();
+    console.log('Response:', data);
 
-      // Add YouTube links (filter out empty ones)
-      const validLinks = youtubeLinks.filter(link => link.trim());
-      if (validLinks.length > 0) {
-        formData.append('youtubeLinks', JSON.stringify(validLinks));
-      }
-
-      console.log('Submitting training with sessionId:', sessionId);
-
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-      const response = await fetch(`${backendUrl}/api/generate-mcq`, {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-      console.log('Response:', data);
-
-      if (!response.ok) {
-        throw new Error(data.error || `Server error: ${response.status}`);
-      }
-
-      // Reset form and close modal
-      setTrainingTitle('');
-      setTextualContext('');
-      setFiles(null);
-      setYoutubeLinks(['']);
-      onClose();
-      onTrainingCreated(data);
-      
-    } catch (err: any) {
-      console.error('Training creation error:', err);
-      setError(err.message || 'Failed to create training');
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(data.error || `Server error: ${response.status}`);
     }
-  };
+
+    // Reset form and close modal
+    setTrainingTitle('');
+    setTextualContext('');
+    setFiles(null);
+    setYoutubeLinks(['']);
+    onClose();
+    onTrainingCreated(data);
+    
+  } catch (err: any) {
+    console.error('Training creation error:', err);
+    setError(err.message || 'Failed to create training');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const addYoutubeLink = () => {
     setYoutubeLinks([...youtubeLinks, '']);
@@ -268,7 +276,7 @@ export default function CreateTrainingModal({
                   </button>
                   <button
                     type="submit"
-                    disabled={loading || !trainingTitle.trim() || !files}
+                   disabled={loading || !trainingTitle.trim() || (!files && youtubeLinks.filter(l => l.trim()).length === 0 && !textualContext.trim())}
                     className="flex-1 group px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     <span className="flex items-center justify-center gap-2">
