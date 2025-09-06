@@ -9,6 +9,7 @@ import UserDropdown from '../components/UserDropDown';
 import ActivityGraph from '../components/ActivityGraph';
 import DashboardStats from '../components/DashboardStats';
 import RecentActivity from '../components/RecentActivity';
+import Dojos from './Dojos';
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -86,10 +87,7 @@ export default function Dashboard() {
         );
       case 'dojos':
         return (
-          <div className="text-center py-20">
-            <h2 className="font-cinzel text-3xl font-bold text-emerald-200 mb-4">Study Dojos</h2>
-            <p className="text-gray-300">Enter focused learning environments tailored to your needs.</p>
-          </div>
+          <Dojos user={user} />
         );
       case 'library':
         return (
