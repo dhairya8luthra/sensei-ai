@@ -10,6 +10,7 @@
   import translatePDF from './routes/notes_translation.js';
   import courseRecommendation from './routes/course_recommendation.js';
   import studyPlan from "./routes/course_planner.js";
+  import generateLectureScript from './routes/generate_scripts_for_lectures.js';
   import cors from 'cors';
   import dotenv from 'dotenv';
   import { verifySupabaseToken } from './middleware/authMiddleware.js';
@@ -32,6 +33,7 @@
   app.use('/api', translatePDF);
   app.use('/api', courseRecommendation);
   app.use('/api', studyPlan);
+  app.use('/api', generateLectureScript);
   // Protected API route
   app.get('/api/protected', verifySupabaseToken, (req, res) => {
     res.json({ message: `Server is running good. Hello ${req.user.email}` });
