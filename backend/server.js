@@ -1,36 +1,64 @@
 import express from 'express';
-import pingRoute from './routes/ping.js';
-import pingSupabaseRoute from './routes/ping_supabase.js';
-import pdfInjestion from './routes/pdf_ingestion.js';
-import generateQuiz from './routes/create_quiz.js';
-import dojoRoutes from './routes/dojos.js';
-import evaluateQuiz from './routes/evaluate_quiz.js';
-import flashcardsRoutes from './routes/flashcards.js'; // Change this import name
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { verifySupabaseToken } from './middleware/authMiddleware.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const app = express();
+// Import routes
+import explainerVideosRouter from './routes/explainer_videos.js';
+import dojosRouter from './routes/dojos.js';
+import flashcardsRouter from './routes/flashcards.js';
+import createQuizRouter from './routes/create_quiz.js';
+import evaluateQuizRouter from './routes/evaluate_quiz.js';
+import pdfIngestionRouter from './routes/pdf_ingestion.js';
+import pingRouter from './routes/ping.js';
+import pingSupabaseRouter from './routes/ping_supabase.js';
 
 dotenv.config();
+
+const app = express();
 const PORT = process.env.PORT || 3000;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
-app.use(cors({ origin: CORS_ORIGIN }));
-app.use(express.json()); // for JSON request bodies
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-app.use('/api', pingRoute);
-app.use('/api', pingSupabaseRoute);
-app.use('/api', pdfInjestion);
-app.use('/api', generateQuiz);
-app.use('/api', dojoRoutes); 
-app.use('/api', evaluateQuiz);
-app.use('/api/flashcards', flashcardsRoutes); // Change this line - use /flashcards prefix
+// Middleware
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  credentials: true
+}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Protected API route
-app.get('/api/protected', verifySupabaseToken, (req, res) => {
-  res.json({ message: `Server is running good. Hello ${req.user.email}` });
+// Serve static files from outputs directory
+app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
+
+// Routes
+app.use('/api/explainers', explainerVideosRouter);
+app.use('/api/dojos', dojosRouter);
+app.use('/api/flashcards', flashcardsRouter);
+app.use('/api/quiz', createQuizRouter);
+app.use('/api/evaluate', evaluateQuizRouter);
+app.use('/api/pdf', pdfIngestionRouter);
+app.use('/api/ping', pingRouter);
+app.use('/api/ping-supabase', pingSupabaseRouter);
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Server error:', error);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: error.message 
+  });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Frontend URL: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
 });
+
+export default app;

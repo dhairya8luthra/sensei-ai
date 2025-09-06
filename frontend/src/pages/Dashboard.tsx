@@ -12,6 +12,7 @@ import RecentActivity from '../components/RecentActivity';
 import Dojos from './Dojos';
 import DojoSession from './DojoSession';
 import MemoryPalace from './MemoryPalace';
+import Academy from './Academy';
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -108,6 +109,10 @@ export default function Dashboard() {
         return (
           <MemoryPalace user={user} />
         );
+      case 'academy':
+        return (
+          <Academy user={user} />
+        );
       case 'progress':
         return (
           <div className="text-center py-20">
@@ -170,6 +175,7 @@ export default function Dashboard() {
               <h2 className="font-cinzel text-2xl font-semibold text-emerald-200 capitalize">
                 {activeTab === 'dashboard' ? 'Dashboard' : 
                  activeTab === 'memory-palace' ? 'Memory Palace' : 
+                 activeTab === 'academy' ? 'Concept Academy' :
                  activeTab}
               </h2>
               <p className="text-gray-400 text-sm">
