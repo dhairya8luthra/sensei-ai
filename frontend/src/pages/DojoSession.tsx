@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ArrowLeft, Sword, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Sword, Plus, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
 import StarryBackground from '../components/StarryBackground';
@@ -15,12 +15,26 @@ interface DojoSessionProps {
   onBackToDojos: () => void;
 }
 
-interface Training {
+interface Quiz {
   id: string;
-  title: string;
-  created_at: string;
+  quizId: string;
+  sessionId: string;
+  userId: string;
+  quiz: Array<{
+    quizId: string;
+    question: string;
+    options: string[];
+  }>;
+  createdAt: string;
+  fileName: string;
+}
+
+interface Training {
+  quizId: string;
+  fileName: string;
+  createdAt: string;
   status: string;
-  questions_count?: number;
+  questionsCount?: number;
 }
 
 export default function DojoSession({ sessionId, sessionName, user, onBackToDojos }: DojoSessionProps) {
@@ -46,25 +60,25 @@ export default function DojoSession({ sessionId, sessionName, user, onBackToDojo
     setError('');
 
     try {
-      // Mock data for now - replace with actual API call
-      const mockTrainings: Training[] = [
-        {
-          id: '1',
-          title: 'Machine Learning Fundamentals',
-          created_at: new Date().toISOString(),
-          status: 'completed',
-          questions_count: 15
-        },
-        {
-          id: '2',
-          title: 'Data Structures Deep Dive',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          status: 'in_progress',
-          questions_count: 20
-        }
-      ];
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const response = await fetch(`${backendUrl}/api/session-quizzes/${sessionId}`);
+      
+      const data = await response.json();
 
-      setTrainings(mockTrainings);
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch trainings');
+      }
+
+      // Transform quiz data to training format
+      const transformedTrainings: Training[] = data.quizzes.map((quiz: Quiz) => ({
+        quizId: quiz.quizId,
+        fileName: quiz.fileName,
+        createdAt: quiz.createdAt,
+        status: 'completed', // You can add logic to determine status
+        questionsCount: quiz.quiz.length
+      }));
+
+      setTrainings(transformedTrainings);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch trainings');
     } finally {
@@ -77,37 +91,40 @@ export default function DojoSession({ sessionId, sessionName, user, onBackToDojo
     fetchTrainings();
   };
 
-  const handleStartTraining = (trainingId: string) => {
-    // Mock quiz data - replace with actual API call
-    const mockQuizData = {
-      quizzes: [
-        {
-          fileName: "Sample Training.pdf",
-          quiz: [
+  const handleStartTraining = async (quizId: string) => {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const response = await fetch(`${backendUrl}/api/session-quizzes/${sessionId}`);
+      
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch quiz data');
+      }
+
+      // Find the specific quiz and format it for the QuizInterface
+      const selectedQuiz = data.quizzes.find((quiz: Quiz) => quiz.quizId === quizId);
+      
+      if (selectedQuiz) {
+        const formattedQuizData = {
+          quizzes: [
             {
-              question: "What is the primary purpose of machine learning?",
-              options: [
-                "A. To replace human intelligence",
-                "B. To enable computers to learn from data",
-                "C. To create artificial consciousness",
-                "D. To automate all tasks"
-              ]
-            },
-            {
-              question: "Which of the following is a supervised learning algorithm?",
-              options: [
-                "A. K-means clustering",
-                "B. Linear regression",
-                "C. DBSCAN",
-                "D. PCA"
-              ]
+              fileName: selectedQuiz.fileName,
+              quiz: selectedQuiz.quiz.map((q: any) => ({
+                question: q.question,
+                options: q.options
+              })),
+              quizId: selectedQuiz.quizId
             }
-          ],
-          quizId: "sample-quiz-id"
-        }
-      ]
-    };
-    setCurrentQuiz(mockQuizData);
+          ]
+        };
+        setCurrentQuiz(formattedQuizData);
+      } else {
+        setError('Quiz not found');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to start training');
+    }
   };
 
   const handleQuizComplete = (results: any) => {
@@ -175,6 +192,7 @@ export default function DojoSession({ sessionId, sessionName, user, onBackToDojo
 
           <QuizInterface 
             quizData={currentQuiz} 
+            sessionId={sessionId}
             onQuizComplete={handleQuizComplete}
           />
         </div>
@@ -266,7 +284,7 @@ export default function DojoSession({ sessionId, sessionName, user, onBackToDojo
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {trainings.map((training) => (
                     <TrainingCard
-                      key={training.id}
+                      key={training.quizId}
                       training={training}
                       onStartTraining={handleStartTraining}
                     />

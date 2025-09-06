@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Target, Plus, Search, Filter, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
