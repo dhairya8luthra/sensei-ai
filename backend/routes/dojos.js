@@ -33,8 +33,7 @@ router.post('/create-dojo-session', async (req, res) => {
         session_id,
         user_id,
         session_name: session_name.trim(),
-        created_at: new Date(),
-        status: 'active'
+        created_at: new Date()
       })
       .select()
       .single();
