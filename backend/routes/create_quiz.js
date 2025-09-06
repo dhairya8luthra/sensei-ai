@@ -97,6 +97,7 @@ router.post("/generate-mcq", upload.array("files"), async (req, res) => {
       const quizForFrontend = mcqs.map((q) => {
         if (q.question && q.options) {
           return {
+            quizId: quizId,
             question: q.question,
             options: q.options,
           };
