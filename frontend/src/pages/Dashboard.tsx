@@ -11,6 +11,7 @@ import DashboardStats from '../components/DashboardStats';
 import RecentActivity from '../components/RecentActivity';
 import Dojos from './Dojos';
 import DojoSession from './DojoSession';
+import MemoryPalace from './MemoryPalace';
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -103,12 +104,9 @@ export default function Dashboard() {
         return (
           <Dojos user={user} onStartSession={handleStartDojoSession} />
         );
-      case 'library':
+      case 'memory-palace':
         return (
-          <div className="text-center py-20">
-            <h2 className="font-cinzel text-3xl font-bold text-emerald-200 mb-4">Materials Library</h2>
-            <p className="text-gray-300">Manage your PDFs, notes, and study materials.</p>
-          </div>
+          <MemoryPalace user={user} />
         );
       case 'progress':
         return (
@@ -170,7 +168,9 @@ export default function Dashboard() {
           <div className="flex items-center justify-between p-6 border-b border-emerald-700/30 backdrop-blur-sm">
             <div>
               <h2 className="font-cinzel text-2xl font-semibold text-emerald-200 capitalize">
-                {activeTab === 'dashboard' ? 'Dashboard' : activeTab}
+                {activeTab === 'dashboard' ? 'Dashboard' : 
+                 activeTab === 'memory-palace' ? 'Memory Palace' : 
+                 activeTab}
               </h2>
               <p className="text-gray-400 text-sm">
                 {new Date().toLocaleDateString('en-US', { 

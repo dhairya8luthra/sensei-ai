@@ -3,12 +3,13 @@ import pingRoute from './routes/ping.js';
 import pingSupabaseRoute from './routes/ping_supabase.js';
 import pdfInjestion from './routes/pdf_ingestion.js';
 import generateQuiz from './routes/create_quiz.js';
-import dojoRoutes from './routes/dojos.js'; // Add this import
+import dojoRoutes from './routes/dojos.js';
 import evaluateQuiz from './routes/evaluate_quiz.js';
-import generateFlashcard from './routes/flashcards.js';
+import flashcardsRoutes from './routes/flashcards.js'; // Change this import name
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { verifySupabaseToken } from './middleware/authMiddleware.js';
+
 const app = express();
 
 dotenv.config();
@@ -23,7 +24,8 @@ app.use('/api', pdfInjestion);
 app.use('/api', generateQuiz);
 app.use('/api', dojoRoutes); 
 app.use('/api', evaluateQuiz);
-app.use('/api', generateFlashcard);
+app.use('/api/flashcards', flashcardsRoutes); // Change this line - use /flashcards prefix
+
 // Protected API route
 app.get('/api/protected', verifySupabaseToken, (req, res) => {
   res.json({ message: `Server is running good. Hello ${req.user.email}` });
