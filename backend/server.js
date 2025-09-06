@@ -2,13 +2,11 @@ import express from 'express';
 import pingRoute from './routes/ping.js';
 import pingSupabaseRoute from './routes/ping_supabase.js';
 import pdfInjestion from './routes/pdf_ingestion.js';
+import generateQuiz from './routes/create_quiz.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { verifySupabaseToken } from './middleware/authMiddleware.js';
 const app = express();
-
-
-
 
 
 dotenv.config();
@@ -20,7 +18,7 @@ app.use(express.json()); // for JSON request bodies
 app.use('/api', pingRoute);
 app.use('/api', pingSupabaseRoute);
 app.use('/api', pdfInjestion);
-
+app.use('/api', generateQuiz);
 // Protected API route
 app.get('/api/protected', verifySupabaseToken, (req, res) => {
   res.json({ message: `Server is running good. Hello ${req.user.email}` });
