@@ -3,11 +3,11 @@ import pingRoute from './routes/ping.js';
 import pingSupabaseRoute from './routes/ping_supabase.js';
 import pdfInjestion from './routes/pdf_ingestion.js';
 import generateQuiz from './routes/create_quiz.js';
+import dojoRoutes from './routes/dojos.js'; // Add this import
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { verifySupabaseToken } from './middleware/authMiddleware.js';
 const app = express();
-
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +19,8 @@ app.use('/api', pingRoute);
 app.use('/api', pingSupabaseRoute);
 app.use('/api', pdfInjestion);
 app.use('/api', generateQuiz);
+app.use('/api', dojoRoutes); 
+
 // Protected API route
 app.get('/api/protected', verifySupabaseToken, (req, res) => {
   res.json({ message: `Server is running good. Hello ${req.user.email}` });
