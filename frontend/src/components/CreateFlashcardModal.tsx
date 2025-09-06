@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import { X, Sword, Upload, Link as LinkIcon, FileText, Sparkles, Loader2 } from 'lucide-react';
+import { X, Brain, Upload, Link as LinkIcon, FileText, Sparkles, Loader2 } from 'lucide-react';
 import Lottie from 'lottie-react';
-import ninjaFight from '../data/fight_ninja.json';
-interface CreateTrainingModalProps {
+import senseiAnimation from '../data/senseiAnimation.json';
+
+interface CreateFlashcardModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onTrainingCreated: (quizData: any) => void;
+  onFlashcardsCreated: (flashcardData: any) => void;
   user: any;
   sessionId: string;
 }
 
-export default function CreateTrainingModal({ 
+export default function CreateFlashcardModal({ 
   isOpen, 
   onClose, 
-  onTrainingCreated, 
+  onFlashcardsCreated, 
   user, 
   sessionId 
-}: CreateTrainingModalProps) {
+}: CreateFlashcardModalProps) {
   const [trainingTitle, setTrainingTitle] = useState('');
   const [textualContext, setTextualContext] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
@@ -25,79 +26,63 @@ export default function CreateTrainingModal({
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  if (!trainingTitle.trim()) {
-    setError('Training title is required');
-    return;
-  }
-
-  // Check if we have any content sources
-  const hasFiles = files && files.length > 0;
-  const validLinks = youtubeLinks.filter(link => link.trim());
-  const hasYouTubeLinks = validLinks.length > 0;
-  const hasTextualContext = textualContext.trim().length > 0;
-
-  if (!hasFiles && !hasYouTubeLinks && !hasTextualContext) {
-    setError('At least one content source is required (PDF files, YouTube links, or additional context)');
-    return;
-  }
-
-  setLoading(true);
-  setError('');
-
-  try {
-    const formData = new FormData();
+    e.preventDefault();
     
-    // Add metadata
-    formData.append('sessionId', sessionId);
-    formData.append('userId', user?.id || '');
-    formData.append('trainingTitle', trainingTitle.trim());
-    formData.append('textualContext', textualContext.trim());
+    const hasFiles = files && files.length > 0;
+    const hasYouTubeLinks = youtubeLinks.some(link => link.trim());
+    const hasTextualContext = textualContext.trim().length > 0;
 
-    // Add files if any
-    if (hasFiles) {
-      for (let i = 0; i < files!.length; i++) {
-        formData.append('files', files![i]);
+    if (!hasFiles && !hasYouTubeLinks && !hasTextualContext) {
+      setError('At least one content source is required');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('session_id', sessionId);
+      formData.append('user_id', user.id); // Add user_id
+      formData.append('trainingTitle', trainingTitle.trim());
+      formData.append('textualContext', textualContext.trim());
+
+      // Add files
+      if (files) {
+        for (let i = 0; i < files.length; i++) {
+          formData.append('files', files[i]);
+        }
       }
-    }
 
-    // Add YouTube links if any
-    if (hasYouTubeLinks) {
+      // Add YouTube links (filter out empty ones)
+      const validLinks = youtubeLinks.filter(link => link.trim());
       formData.append('youtubeLinks', JSON.stringify(validLinks));
+
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const response = await fetch(`${backendUrl}/api/flashcards/generate-flashcards`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create flashcards');
+      }
+
+      // Reset form and close modal
+      setTrainingTitle('');
+      setTextualContext('');
+      setFiles(null);
+      setYoutubeLinks(['']);
+      onClose();
+      onFlashcardsCreated(data);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create flashcards');
+    } finally {
+      setLoading(false);
     }
-
-    console.log('Submitting training with sessionId:', sessionId);
-    console.log('Content sources:', { hasFiles, hasYouTubeLinks, hasTextualContext });
-
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-    const response = await fetch(`${backendUrl}/api/generate-mcq`, {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await response.json();
-    console.log('Response:', data);
-
-    if (!response.ok) {
-      throw new Error(data.error || `Server error: ${response.status}`);
-    }
-
-    // Reset form and close modal
-    setTrainingTitle('');
-    setTextualContext('');
-    setFiles(null);
-    setYoutubeLinks(['']);
-    onClose();
-    onTrainingCreated(data);
-    
-  } catch (err: any) {
-    console.error('Training creation error:', err);
-    setError(err.message || 'Failed to create training');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const addYoutubeLink = () => {
     setYoutubeLinks([...youtubeLinks, '']);
@@ -125,13 +110,13 @@ export default function CreateTrainingModal({
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center">
-                <Sword className="w-6 h-6 text-white" />
+                <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h2 className="font-cinzel text-3xl font-semibold text-emerald-200">
-                  Create New Training
+                  Create Memory Cards
                 </h2>
-                <p className="text-gray-400 mt-1">Forge your path to mastery</p>
+                <p className="text-gray-400 mt-1">Build your knowledge palace</p>
               </div>
             </div>
             <button
@@ -149,19 +134,18 @@ export default function CreateTrainingModal({
                 {/* Training Title */}
                 <div>
                   <label className="block text-emerald-200 font-medium mb-3" htmlFor="trainingTitle">
-                    Training Title <span className="text-red-400">*</span>
+                    Memory Set Title
                   </label>
                   <input
                     id="trainingTitle"
                     type="text"
-                    placeholder="Enter training title..."
+                    placeholder="Enter memory set title..."
                     value={trainingTitle}
                     onChange={(e) => {
                       setTrainingTitle(e.target.value);
                       setError('');
                     }}
                     className="w-full px-4 py-3 bg-slate-800/50 border border-emerald-700/30 rounded-lg text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
-                    required
                     maxLength={100}
                   />
                 </div>
@@ -184,7 +168,7 @@ export default function CreateTrainingModal({
                 {/* PDF Upload */}
                 <div>
                   <label className="block text-emerald-200 font-medium mb-3">
-                    Upload PDFs <span className="text-red-400">*</span>
+                    Upload PDFs
                   </label>
                   <div className="border-2 border-dashed border-emerald-700/30 rounded-lg p-6 text-center hover:border-emerald-500/50 transition-all duration-300">
                     <Upload className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
@@ -269,25 +253,24 @@ export default function CreateTrainingModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    disabled={loading}
-                    className="flex-1 px-6 py-3 border-2 border-emerald-400/50 text-emerald-400 rounded-lg font-semibold hover:bg-emerald-400/10 transition-all duration-300 disabled:opacity-50"
+                    className="flex-1 px-6 py-3 border-2 border-emerald-400/50 text-emerald-400 rounded-lg font-semibold hover:bg-emerald-400/10 transition-all duration-300"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                   disabled={loading || !trainingTitle.trim() || (!files && youtubeLinks.filter(l => l.trim()).length === 0 && !textualContext.trim())}
+                    disabled={loading}
                     className="flex-1 group px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     <span className="flex items-center justify-center gap-2">
                       {loading ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" />
-                          Creating Training...
+                          Creating Memory Cards...
                         </>
                       ) : (
                         <>
-                          Create Training
+                          Create Memory Cards
                           <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
                         </>
                       )}
@@ -301,7 +284,7 @@ export default function CreateTrainingModal({
             <div className="flex items-center justify-center">
               <div className="w-80 h-80">
                 <Lottie 
-                  animationData={ninjaFight} 
+                  animationData={senseiAnimation} 
                   loop={true}
                   style={{ width: '100%', height: '100%' }}
                   className="drop-shadow-3xl"
