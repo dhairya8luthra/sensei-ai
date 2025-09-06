@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Sword, Plus, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
@@ -192,6 +192,7 @@ export default function DojoSession({ sessionId, sessionName, user, onBackToDojo
 
           <QuizInterface 
             quizData={currentQuiz} 
+            sessionId={sessionId}
             onQuizComplete={handleQuizComplete}
           />
         </div>
@@ -281,13 +282,13 @@ export default function DojoSession({ sessionId, sessionName, user, onBackToDojo
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {trainings.map((training) => (
-  <TrainingCard
-    key={training.quizId} // This should be unique
-    training={training}
-    onStartTraining={handleStartTraining}
-  />
-))}
+                  {trainings.map((training) => (
+                    <TrainingCard
+                      key={training.quizId}
+                      training={training}
+                      onStartTraining={handleStartTraining}
+                    />
+                  ))}
                 </div>
               )}
             </div>
