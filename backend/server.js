@@ -1,6 +1,7 @@
 import express from 'express';
 import pingRoute from './routes/ping.js';
 import pingSupabaseRoute from './routes/ping_supabase.js';
+import pdfInjestion from './routes/pdf_ingestion.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { verifySupabaseToken } from './middleware/authMiddleware.js';
@@ -18,6 +19,7 @@ app.use(express.json()); // for JSON request bodies
 
 app.use('/api', pingRoute);
 app.use('/api', pingSupabaseRoute);
+app.use('/api', pdfInjestion);
 
 // Protected API route
 app.get('/api/protected', verifySupabaseToken, (req, res) => {
