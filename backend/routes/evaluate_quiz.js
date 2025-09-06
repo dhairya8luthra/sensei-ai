@@ -71,13 +71,41 @@ router.post('/calculate-score', async (req, res) => {
       };
     });
 
+    // Create detailed answer results for response
+    const answerResults = analysisData.map(item => ({
+      question: item.question,
+      options: item.options,
+      user_answer: item.user_solution,
+      correct_answer: item.correct_solution ? item.correct_solution.split('.')[0].trim() : null,
+      full_correct_solution: item.correct_solution,
+      is_correct: item.is_correct,
+      status: item.is_correct ? 'correct' : 'wrong'
+    }));
+
     // Get AI insights on weak areas
     const insightsResponse = await getGeminiInsights(analysisData);
+
+    // Store insights in Supabase quizzes table
+    const { error: updateError } = await supabase
+      .from('quizzes')
+      .update({ 
+        insights: insightsResponse,
+        updated_at: new Date().toISOString()
+      })
+      .eq('quiz_id', quiz_id);
+
+    if (updateError) {
+      console.error('Failed to store insights:', updateError);
+      // Continue execution - don't fail the request if insights storage fails
+    }
 
     return res.json({
       session_id,
       quiz_id,
       score,
+      total_questions: solution.length,
+      percentage: Math.round((score / solution.length) * 100),
+      answer_details: answerResults,
       insights: insightsResponse
     });
   } catch (err) {
