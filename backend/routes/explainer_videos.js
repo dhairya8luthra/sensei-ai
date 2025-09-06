@@ -1,10 +1,16 @@
+import dotenv from "dotenv";
+import { createClient } from '@supabase/supabase-js';
+dotenv.config();
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+)
 import express from "express";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
 import pdfParse from "pdf-parse";
 import { v4 as uuidv4 } from 'uuid';
-import { createClient } from '@supabase/supabase-js';
 import Groq from "groq-sdk";
 import ffmpeg from 'ffmpeg-static';
 import { spawn } from 'child_process';
@@ -16,7 +22,6 @@ const pptxgen = require('pptxgenjs');
 
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // Ensure necessary directories exist
