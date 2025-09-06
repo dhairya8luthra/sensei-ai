@@ -1,26 +1,277 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Torus as Torii, Mail, Lock, User, Chrome, ArrowLeft, Sparkles } from 'lucide-react';
+import Lottie from 'lottie-react';
 import { supabase } from '@/lib/supabaseClient';
+import ninja from '../data/ninja.json';
+import StarryBackground from '../components/StarryBackground';
+import ScrollingParticles from '../components/ScrollingParticles';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleEmailSignup = async () => {
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) alert(error.message);
-    else alert('Check your email to confirm signup!');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    const { error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+        }
+      }
+    });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess(true);
+    }
+
+    setLoading(false);
   };
 
   const handleGoogleSignup = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' });
+    setLoading(true);
+    setError('');
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`
+      }
+    });
+
+    if (error) {
+      setError(error.message);
+    }
+
+    setLoading(false);
   };
 
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-emerald-950 to-slate-800 text-white overflow-hidden relative">
+        <StarryBackground />
+        <ScrollingParticles />
+        
+        <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+          <div className="max-w-md mx-auto">
+            <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-emerald-700/30 shadow-2xl text-center">
+              <div className="w-20 h-20 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="font-cinzel text-2xl font-semibold text-emerald-200 mb-4">
+                Welcome to the Dojo!
+              </h2>
+              <p className="text-gray-300 mb-6">
+                Check your email to confirm your account and begin your learning journey.
+              </p>
+              <Link 
+                to="/login"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300"
+              >
+                Continue to Login
+                <ArrowLeft className="w-4 h-4 rotate-180" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center gap-2 min-h-screen justify-center">
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleEmailSignup}>Sign Up</button>
-      <button onClick={handleGoogleSignup}>Sign Up with Google</button>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-emerald-950 to-slate-800 text-white overflow-hidden relative">
+      <StarryBackground />
+      <ScrollingParticles />
+      
+      {/* Navigation */}
+      <nav className="relative z-20 p-6">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <ArrowLeft className="w-5 h-5 text-emerald-400 group-hover:-translate-x-1 transition-transform duration-300" />
+            <span className="text-emerald-400 font-medium">Back to Home</span>
+          </Link>
+          <div className="flex items-center space-x-3">
+            <Torii className="w-8 h-8 text-emerald-400" />
+            <span className="font-cinzel text-2xl font-semibold text-white">Sensei AI</span>
+          </div>
+        </div>
+      </nav>
+
+      {/* Signup Form */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Side - Lottie Animation */}
+          <div className="hidden lg:flex justify-center">
+            <div className="w-[28rem] h-[28rem]">
+              <Lottie 
+                animationData={ninja} 
+                loop={true}
+                style={{ width: '100%', height: '100%' }}
+                className="drop-shadow-3xl"
+              />
+            </div>
+          </div>
+
+          {/* Right Side - Form */}
+          <div className="w-full max-w-md mx-auto lg:mx-0">
+            <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-emerald-700/30 shadow-2xl">
+              <div className="text-center mb-8">
+                <h1 className="font-cinzel text-3xl font-semibold text-emerald-200 mb-2">
+                  Begin Your Journey
+                </h1>
+                <p className="text-gray-300">
+                  Join the dojo and master concepts with Sensei AI
+                </p>
+              </div>
+
+              {error && (
+                <div className="bg-red-900/40 border border-red-500/50 rounded-lg p-4 mb-6">
+                  <p className="text-red-300 text-sm text-center">{error}</p>
+                </div>
+              )}
+
+              <form onSubmit={(e) => { e.preventDefault(); handleEmailSignup(); }} className="space-y-6">
+                <div>
+                  <label className="block text-emerald-200 font-medium mb-2" htmlFor="fullName">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-400" />
+                    <input
+                      id="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-emerald-700/30 rounded-lg text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-emerald-200 font-medium mb-2" htmlFor="email">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-400" />
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-emerald-700/30 rounded-lg text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-emerald-200 font-medium mb-2" htmlFor="password">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-400" />
+                    <input
+                      id="password"
+                      type="password"
+                      placeholder="Create a password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-emerald-700/30 rounded-lg text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-emerald-200 font-medium mb-2" htmlFor="confirmPassword">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-400" />
+                    <input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-emerald-700/30 rounded-lg text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="group w-full px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    {loading ? 'Creating Account...' : 'Learn with Sensei'}
+                    {!loading && <Sparkles className="w-5 h-5 group-hover:animate-pulse" />}
+                  </span>
+                </button>
+              </form>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-emerald-700/30"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-gradient-to-br from-emerald-900/40 to-slate-900/40 text-gray-300">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={handleGoogleSignup}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-3 px-6 py-3 border-2 border-emerald-400 text-emerald-400 rounded-lg font-semibold hover:bg-emerald-400 hover:text-slate-900 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Chrome className="w-5 h-5" />
+                {loading ? 'Connecting...' : 'Continue with Google'}
+              </button>
+
+              <div className="mt-8 text-center">
+                <p className="text-gray-300">
+                  Already have an account?{' '}
+                  <Link 
+                    to="/login" 
+                    className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors duration-300"
+                  >
+                    Enter the Dragon
+                  </Link>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
