@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Sword, Plus, Sparkles } from 'lucide-react';
+import  { useState, useEffect } from 'react';
+import { ArrowLeft, Sword, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
 import StarryBackground from '../components/StarryBackground';

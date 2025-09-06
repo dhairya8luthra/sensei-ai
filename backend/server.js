@@ -13,7 +13,7 @@ import evaluateQuizRouter from './routes/evaluate_quiz.js';
 import pdfIngestionRouter from './routes/pdf_ingestion.js';
 import pingRouter from './routes/ping.js';
 import pingSupabaseRouter from './routes/ping_supabase.js';
-
+import academyVideosRoutes from './routes/academy_videos.js';
 dotenv.config();
 
 const app = express();
@@ -41,6 +41,7 @@ app.use('/api/evaluate', evaluateQuizRouter);
 app.use('/api/pdf', pdfIngestionRouter);
 app.use('/api/ping', pingRouter);
 app.use('/api/ping-supabase', pingSupabaseRouter);
+app.use('/api/academy', academyVideosRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
