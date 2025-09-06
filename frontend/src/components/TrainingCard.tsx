@@ -2,16 +2,16 @@
 import { Calendar, Clock, Play, BookOpen } from 'lucide-react';
 
 interface Training {
-  id: string;
-  title: string;
-  created_at: string;
+  quizId: string;
+  fileName: string;
+  createdAt: string;
   status: string;
-  questions_count?: number;
+  questionsCount?: number;
 }
 
 interface TrainingCardProps {
   training: Training;
-  onStartTraining: (trainingId: string) => void;
+  onStartTraining: (quizId: string) => void;
 }
 
 export default function TrainingCard({ training, onStartTraining }: TrainingCardProps) {
@@ -55,16 +55,16 @@ export default function TrainingCard({ training, onStartTraining }: TrainingCard
           </div>
           <div>
             <h3 className="font-cinzel text-lg font-semibold text-emerald-200 group-hover:text-emerald-100 transition-colors duration-200">
-              {training.title}
+              {training.fileName}
             </h3>
             <div className="flex items-center space-x-4 text-sm text-gray-400 mt-1">
               <div className="flex items-center space-x-1">
                 <Calendar className="w-3 h-3" />
-                <span>{formatDate(training.created_at)}</span>
+                <span>{formatDate(training.createdAt)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Clock className="w-3 h-3" />
-                <span>{formatTime(training.created_at)}</span>
+                <span>{formatTime(training.createdAt)}</span>
               </div>
             </div>
           </div>
@@ -77,16 +77,16 @@ export default function TrainingCard({ training, onStartTraining }: TrainingCard
           {training.status.charAt(0).toUpperCase() + training.status.slice(1).replace('_', ' ')}
         </span>
         
-        {training.questions_count && (
+        {training.questionsCount && (
           <div className="text-xs text-gray-400">
-            {training.questions_count} questions
+            {training.questionsCount} questions
           </div>
         )}
       </div>
 
       {/* Action Button */}
       <button
-        onClick={() => onStartTraining(training.id)}
+        onClick={() => onStartTraining(training.quizId)}
         className="w-full group/btn flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-emerald-600/80 to-emerald-700/80 hover:from-emerald-600 hover:to-emerald-700 rounded-lg font-semibold text-white shadow-lg hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 transition-all duration-300"
       >
         <Play className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />

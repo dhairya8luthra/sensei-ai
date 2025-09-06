@@ -53,14 +53,83 @@ async function generateMCQs(textChunk) {
   }
 }
 
+// Fetch all quizzes from a dojo session
+router.get("/session-quizzes/:session_id", async (req, res) => {
+  try {
+    const { session_id } = req.params;
+
+    if (!session_id) {
+      return res.status(400).json({ error: "Session ID is required" });
+    }
+
+    // Fetch all quizzes for the given session_id
+    const { data, error } = await supabase
+      .from("quizzes")
+      .select("*")
+      .eq("session_id", session_id)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching session quizzes:", error);
+      return res.status(500).json({ 
+        error: "Failed to fetch quizzes",
+        details: error.message 
+      });
+    }
+
+    // Format the response to match frontend expectations
+    const formattedQuizzes = data.map(quiz => {
+      // Extract quiz data without solutions for frontend
+      const quizForFrontend = quiz.quiz_data.map((q) => {
+        if (q.question && q.options) {
+          return {
+            quizId: quiz.quiz_id,
+            question: q.question,
+            options: q.options,
+          };
+        }
+        return q; // in case of errors or malformed data
+      });
+
+      return {
+        quizId: quiz.quiz_id,
+        sessionId: quiz.session_id,
+        userId: quiz.user_id,
+        quiz: quizForFrontend,
+        createdAt: quiz.created_at,
+        fileName: `Quiz ${quiz.quiz_id.slice(0, 8)}`, // Generate a filename since it's not stored
+      };
+    });
+
+    res.json({
+      message: "Quizzes retrieved successfully",
+      sessionId: session_id,
+      totalQuizzes: formattedQuizzes.length,
+      quizzes: formattedQuizzes
+    });
+
+  } catch (error) {
+    console.error("Error in /session-quizzes:", error);
+    res.status(500).json({ 
+      error: "Internal server error",
+      details: error.message 
+    });
+  }
+});
+
 router.post("/generate-mcq", upload.array("files"), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No files uploaded" });
     }
 
-    const userId = req.user?.id || null; // adapt as per your auth
-    const sessionId = uuidv4(); // create a session ID for this quiz batch
+    // Get sessionId from form data
+    const sessionId = req.body.sessionId;
+    const userId = req.body.userId;
+
+    if (!sessionId) {
+      return res.status(400).json({ error: "Session ID is required" });
+    }
 
     let allMcqs = [];
 
@@ -82,9 +151,9 @@ router.post("/generate-mcq", upload.array("files"), async (req, res) => {
 
       const { error } = await supabase.from("quizzes").insert({
         quiz_id: quizId,
-        session_id: sessionId,
+        session_id: sessionId, // Use the provided sessionId
         user_id: userId,
-        quiz_data: mcqs,         // Store as JSONB column in Supabase
+        quiz_data: mcqs,
         created_at: new Date(),
       });
 
@@ -108,7 +177,7 @@ router.post("/generate-mcq", upload.array("files"), async (req, res) => {
       allMcqs.push({
         fileName: file.originalname,
         quiz: quizForFrontend,
-        quizId,             // Include quizId so frontend can reference answers later if needed
+        quizId,
       });
 
       fs.unlinkSync(file.path);

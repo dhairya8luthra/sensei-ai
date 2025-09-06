@@ -1,102 +1,45 @@
-import { useState, useEffect } from 'react';
-import { Clock, CheckCircle,  RotateCcw, Timer } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, CheckCircle, Clock, Award } from 'lucide-react';
+
+interface QuizQuestion {
+  question: string;
+  options: string[];
+}
 
 interface Quiz {
   fileName: string;
-  quiz: Array<{
-    question: string;
-    options: string[];
-  }>;
+  quiz: QuizQuestion[];
   quizId: string;
 }
 
+interface QuizData {
+  quizzes: Quiz[];
+}
+
 interface QuizInterfaceProps {
-  quizData: {
-    quizzes: Quiz[];
-  };
+  quizData: QuizData;
   onQuizComplete: (results: any) => void;
 }
 
 export default function QuizInterface({ quizData, onQuizComplete }: QuizInterfaceProps) {
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [timeLeft, setTimeLeft] = useState<number | null>(null);
-  const [timerEnabled, setTimerEnabled] = useState(false);
-  const [customTime, setCustomTime] = useState(30);
-  const [quizStarted, setQuizStarted] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<{[key: string]: string}>({});
   const [showResults, setShowResults] = useState(false);
+  const [timeElapsed, setTimeElapsed] = useState(0);
 
-  const currentQuiz = quizData.quizzes[currentQuizIndex];
-  const currentQuestion = currentQuiz?.quiz[currentQuestionIndex];
-  const totalQuestions = quizData.quizzes.reduce((sum, quiz) => sum + quiz.quiz.length, 0);
-  const answeredQuestions = Object.keys(answers).length;
+  const currentQuiz = quizData?.quizzes?.[currentQuizIndex];
+  const currentQuestion = currentQuiz?.quiz?.[currentQuestionIndex];
+  const totalQuestions = currentQuiz?.quiz?.length || 0;
 
   // Timer effect
   useEffect(() => {
-    if (timerEnabled && timeLeft !== null && timeLeft > 0 && quizStarted) {
-      const timer = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev === null || prev <= 1) {
-            handleAutoSubmit();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+    const timer = setInterval(() => {
+      setTimeElapsed(prev => prev + 1);
+    }, 1000);
 
-      return () => clearInterval(timer);
-    }
-  }, [timeLeft, timerEnabled, quizStarted]);
-
-  const handleStartQuiz = () => {
-    setQuizStarted(true);
-    if (timerEnabled) {
-      setTimeLeft(customTime * 60); // Convert minutes to seconds
-    }
-  };
-
-  const handleAnswerSelect = (answer: string) => {
-    const questionKey = `${currentQuizIndex}-${currentQuestionIndex}`;
-    setAnswers(prev => ({
-      ...prev,
-      [questionKey]: answer
-    }));
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < currentQuiz.quiz.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else if (currentQuizIndex < quizData.quizzes.length - 1) {
-      setCurrentQuizIndex(currentQuizIndex + 1);
-      setCurrentQuestionIndex(0);
-    } else {
-      handleSubmitQuiz();
-    }
-  };
-
-  const handlePreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    } else if (currentQuizIndex > 0) {
-      setCurrentQuizIndex(currentQuizIndex - 1);
-      setCurrentQuestionIndex(quizData.quizzes[currentQuizIndex - 1].quiz.length - 1);
-    }
-  };
-
-  const handleAutoSubmit = () => {
-    handleSubmitQuiz();
-  };
-
-  const handleSubmitQuiz = () => {
-    setShowResults(true);
-    onQuizComplete({
-      answers,
-      totalQuestions,
-      answeredQuestions,
-      timeUsed: timerEnabled ? (customTime * 60 - (timeLeft || 0)) : null
-    });
-  };
+    return () => clearInterval(timer);
+  }, []);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -104,203 +47,176 @@ export default function QuizInterface({ quizData, onQuizComplete }: QuizInterfac
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getCurrentQuestionNumber = () => {
-    let questionNumber = 1;
-    for (let i = 0; i < currentQuizIndex; i++) {
-      questionNumber += quizData.quizzes[i].quiz.length;
-    }
-    return questionNumber + currentQuestionIndex;
+  const handleAnswerSelect = (answer: string) => {
+    const questionKey = `${currentQuizIndex}-${currentQuestionIndex}`;
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [questionKey]: answer
+    }));
   };
 
-  if (!quizStarted) {
+  const handleNext = () => {
+    if (currentQuestionIndex < totalQuestions - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else if (currentQuizIndex < quizData.quizzes.length - 1) {
+      // Move to next quiz
+      setCurrentQuizIndex(currentQuizIndex + 1);
+      setCurrentQuestionIndex(0);
+    } else {
+      // All quizzes completed
+      setShowResults(true);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    } else if (currentQuizIndex > 0) {
+      // Move to previous quiz
+      setCurrentQuizIndex(currentQuizIndex - 1);
+      const prevQuiz = quizData.quizzes[currentQuizIndex - 1];
+      setCurrentQuestionIndex(prevQuiz.quiz.length - 1);
+    }
+  };
+
+  const handleFinish = () => {
+    const results = {
+      totalQuestions: quizData.quizzes.reduce((total, quiz) => total + quiz.quiz.length, 0),
+      answeredQuestions: Object.keys(selectedAnswers).length,
+      timeElapsed,
+      answers: selectedAnswers
+    };
+    onQuizComplete(results);
+  };
+
+  const getProgress = () => {
+    const totalQuestions = quizData.quizzes.reduce((total, quiz) => total + quiz.quiz.length, 0);
+    const currentProgress = quizData.quizzes.slice(0, currentQuizIndex).reduce((total, quiz) => total + quiz.quiz.length, 0) + currentQuestionIndex + 1;
+    return (currentProgress / totalQuestions) * 100;
+  };
+
+  if (!quizData || !quizData.quizzes || quizData.quizzes.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-emerald-700/30">
-          <div className="text-center mb-8">
-            <h2 className="font-cinzel text-3xl font-semibold text-emerald-200 mb-4">
-              Ready to Begin Training?
-            </h2>
-            <p className="text-gray-300 text-lg">
-              You have {totalQuestions} questions across {quizData.quizzes.length} materials
-            </p>
-          </div>
-
-          {/* Timer Settings */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-4">
-              <input
-                type="checkbox"
-                id="enableTimer"
-                checked={timerEnabled}
-                onChange={(e) => setTimerEnabled(e.target.checked)}
-                className="w-5 h-5 text-emerald-600 bg-slate-800 border-emerald-700 rounded focus:ring-emerald-500 focus:ring-2"
-              />
-              <label htmlFor="enableTimer" className="text-emerald-200 font-medium">
-                Enable Timer
-              </label>
-            </div>
-
-            {timerEnabled && (
-              <div className="flex items-center space-x-4">
-                <Timer className="w-5 h-5 text-emerald-400" />
-                <input
-                  type="number"
-                  min="1"
-                  max="180"
-                  value={customTime}
-                  onChange={(e) => setCustomTime(parseInt(e.target.value) || 30)}
-                  className="w-20 px-3 py-2 bg-slate-800/50 border border-emerald-700/30 rounded-lg text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
-                />
-                <span className="text-gray-300">minutes</span>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={handleStartQuiz}
-            className="w-full group px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold text-lg shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300"
-          >
-            <span className="flex items-center justify-center gap-2">
-              Begin Training
-              <CheckCircle className="w-5 h-5 group-hover:animate-pulse" />
-            </span>
-          </button>
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <p className="text-gray-300 text-lg">No quiz data available</p>
         </div>
       </div>
     );
   }
 
   if (showResults) {
+    const totalQuestions = quizData.quizzes.reduce((total, quiz) => total + quiz.quiz.length, 0);
+    const answeredQuestions = Object.keys(selectedAnswers).length;
+    
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-2xl p-8 border border-emerald-700/30 text-center">
-          <CheckCircle className="w-16 h-16 text-emerald-400 mx-auto mb-6" />
-          <h2 className="font-cinzel text-3xl font-semibold text-emerald-200 mb-4">
-            Training Complete!
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center py-20">
+          <Award className="w-24 h-24 text-emerald-400 mx-auto mb-6" />
+          <h2 className="font-cinzel text-3xl font-bold text-emerald-200 mb-4">
+            Training Completed!
           </h2>
-          <div className="space-y-4 text-lg">
-            <p className="text-gray-300">
-              Questions Answered: <span className="text-emerald-400 font-semibold">{answeredQuestions}/{totalQuestions}</span>
-            </p>
-            {timerEnabled && (
-              <p className="text-gray-300">
-                Time Used: <span className="text-emerald-400 font-semibold">
-                  {formatTime((customTime * 60) - (timeLeft || 0))}
-                </span>
-              </p>
-            )}
+          <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-2xl mx-auto">
+            <div className="bg-emerald-900/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-emerald-400">{answeredQuestions}</div>
+              <div className="text-gray-300">Questions Answered</div>
+            </div>
+            <div className="bg-emerald-900/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-emerald-400">{totalQuestions}</div>
+              <div className="text-gray-300">Total Questions</div>
+            </div>
+            <div className="bg-emerald-900/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-emerald-400">{formatTime(timeElapsed)}</div>
+              <div className="text-gray-300">Time Elapsed</div>
+            </div>
           </div>
           <button
-            onClick={() => window.location.reload()}
-            className="mt-8 group px-8 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300"
+            onClick={handleFinish}
+            className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold hover:from-emerald-500 hover:to-emerald-600 transition-all duration-300"
           >
-            <span className="flex items-center justify-center gap-2">
-              Start New Training
-              <RotateCcw className="w-5 h-5 group-hover:animate-pulse" />
-            </span>
+            Complete Training
           </button>
         </div>
       </div>
     );
   }
 
+  const questionKey = `${currentQuizIndex}-${currentQuestionIndex}`;
+  const currentAnswer = selectedAnswers[questionKey];
+
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Progress Header */}
-      <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-6 border border-emerald-700/30 mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="font-cinzel text-xl font-semibold text-emerald-200">
-              {currentQuiz.fileName}
-            </h3>
-            <p className="text-gray-400">
-              Question {getCurrentQuestionNumber()} of {totalQuestions}
-            </p>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="font-cinzel text-2xl font-bold text-emerald-200 mb-2">
+          {currentQuiz.fileName}
+        </h1>
+        <div className="flex items-center justify-center space-x-6 text-sm text-gray-400">
+          <div className="flex items-center space-x-1">
+            <Clock className="w-4 h-4" />
+            <span>{formatTime(timeElapsed)}</span>
           </div>
-          
-          {timerEnabled && timeLeft !== null && (
-            <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-emerald-400" />
-              <span className={`text-lg font-mono font-semibold ${
-                timeLeft < 60 ? 'text-red-400' : 'text-emerald-400'
-              }`}>
-                {formatTime(timeLeft)}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-full bg-slate-700/50 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${(getCurrentQuestionNumber() / totalQuestions) * 100}%` }}
-          />
+          <div>
+            Quiz {currentQuizIndex + 1} of {quizData.quizzes.length}
+          </div>
+          <div>
+            Question {currentQuestionIndex + 1} of {totalQuestions}
+          </div>
         </div>
       </div>
 
+      {/* Progress Bar */}
+      <div className="w-full bg-slate-800 rounded-full h-2 mb-8">
+        <div
+          className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-300"
+          style={{ width: `${getProgress()}%` }}
+        ></div>
+      </div>
+
       {/* Question */}
-      <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 mb-8">
-        <h2 className="text-2xl font-semibold text-emerald-200 mb-8 leading-relaxed">
+      <div className="bg-gradient-to-br from-emerald-900/20 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 mb-8">
+        <h2 className="font-cinzel text-xl font-semibold text-emerald-200 mb-6">
           {currentQuestion?.question}
         </h2>
 
         <div className="space-y-4">
-          {currentQuestion?.options.map((option, index) => {
-            const questionKey = `${currentQuizIndex}-${currentQuestionIndex}`;
-            const isSelected = answers[questionKey] === option;
-            
-            return (
-              <button
-                key={index}
-                onClick={() => handleAnswerSelect(option)}
-                className={`w-full p-4 rounded-lg border-2 text-left transition-all duration-300 ${
-                  isSelected
-                    ? 'border-emerald-500 bg-emerald-600/20 text-emerald-200'
-                    : 'border-emerald-700/30 bg-slate-800/30 text-gray-300 hover:border-emerald-500/50 hover:bg-emerald-900/20'
-                }`}
-              >
-                <span className="text-lg">{option}</span>
-              </button>
-            );
-          })}
+          {currentQuestion?.options?.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleAnswerSelect(option)}
+              className={`w-full text-left p-4 rounded-lg border transition-all duration-300 ${
+                currentAnswer === option
+                  ? 'border-emerald-500 bg-emerald-900/30 text-emerald-200'
+                  : 'border-emerald-700/30 bg-slate-900/40 text-gray-300 hover:border-emerald-600/50 hover:bg-emerald-900/20'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <button
-          onClick={handlePreviousQuestion}
+          onClick={handlePrevious}
           disabled={currentQuizIndex === 0 && currentQuestionIndex === 0}
-          className="px-6 py-3 border-2 border-emerald-400/50 text-emerald-400 rounded-lg font-semibold hover:bg-emerald-400/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 bg-slate-700 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors"
         >
           Previous
         </button>
 
-        <div className="text-center">
-          <p className="text-gray-400 text-sm">
-            {answeredQuestions} of {totalQuestions} answered
-          </p>
-        </div>
+        <span className="text-gray-400">
+          {Object.keys(selectedAnswers).length} / {quizData.quizzes.reduce((total, quiz) => total + quiz.quiz.length, 0)} answered
+        </span>
 
-        {getCurrentQuestionNumber() === totalQuestions ? (
-          <button
-            onClick={handleSubmitQuiz}
-            className="group px-8 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300"
-          >
-            <span className="flex items-center gap-2">
-              Submit Quiz
-              <CheckCircle className="w-5 h-5 group-hover:animate-pulse" />
-            </span>
-          </button>
-        ) : (
-          <button
-            onClick={handleNextQuestion}
-            className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold shadow-xl hover:shadow-emerald-500/30 transform hover:-translate-y-1 transition-all duration-300"
-          >
-            Next
-          </button>
-        )}
+        <button
+          onClick={handleNext}
+          disabled={!currentAnswer}
+          className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-emerald-500 hover:to-emerald-600 transition-all duration-300"
+        >
+          {currentQuizIndex === quizData.quizzes.length - 1 && currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next'}
+        </button>
       </div>
     </div>
   );

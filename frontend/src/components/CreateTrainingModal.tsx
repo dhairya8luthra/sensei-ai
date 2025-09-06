@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sword, Upload, Link as LinkIcon, FileText, Sparkles, Loader2 } from 'lucide-react';
 import Lottie from 'lottie-react';
-import senseiAnimation from '../data/senseiAnimation.json';
-
+import ninjaFight from '../data/fight_ninja.json';
 interface CreateTrainingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -27,6 +26,7 @@ export default function CreateTrainingModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!trainingTitle.trim()) {
       setError('Training title is required');
       return;
@@ -42,10 +42,12 @@ export default function CreateTrainingModal({
 
     try {
       const formData = new FormData();
-      formData.append('training_title', trainingTitle.trim());
-      formData.append('textual_context', textualContext.trim());
-      formData.append('session_id', sessionId);
-      formData.append('user_id', user.id);
+      
+      // Add metadata
+      formData.append('sessionId', sessionId);
+      formData.append('userId', user?.id || '');
+      formData.append('trainingTitle', trainingTitle.trim());
+      formData.append('textualContext', textualContext.trim());
 
       // Add files
       for (let i = 0; i < files.length; i++) {
@@ -54,7 +56,11 @@ export default function CreateTrainingModal({
 
       // Add YouTube links (filter out empty ones)
       const validLinks = youtubeLinks.filter(link => link.trim());
-      formData.append('youtube_links', JSON.stringify(validLinks));
+      if (validLinks.length > 0) {
+        formData.append('youtubeLinks', JSON.stringify(validLinks));
+      }
+
+      console.log('Submitting training with sessionId:', sessionId);
 
       const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
       const response = await fetch(`${backendUrl}/api/generate-mcq`, {
@@ -63,9 +69,10 @@ export default function CreateTrainingModal({
       });
 
       const data = await response.json();
+      console.log('Response:', data);
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create training');
+        throw new Error(data.error || `Server error: ${response.status}`);
       }
 
       // Reset form and close modal
@@ -75,7 +82,9 @@ export default function CreateTrainingModal({
       setYoutubeLinks(['']);
       onClose();
       onTrainingCreated(data);
+      
     } catch (err: any) {
+      console.error('Training creation error:', err);
       setError(err.message || 'Failed to create training');
     } finally {
       setLoading(false);
@@ -252,7 +261,8 @@ export default function CreateTrainingModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 px-6 py-3 border-2 border-emerald-400/50 text-emerald-400 rounded-lg font-semibold hover:bg-emerald-400/10 transition-all duration-300"
+                    disabled={loading}
+                    className="flex-1 px-6 py-3 border-2 border-emerald-400/50 text-emerald-400 rounded-lg font-semibold hover:bg-emerald-400/10 transition-all duration-300 disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -283,7 +293,7 @@ export default function CreateTrainingModal({
             <div className="flex items-center justify-center">
               <div className="w-80 h-80">
                 <Lottie 
-                  animationData={senseiAnimation} 
+                  animationData={ninjaFight} 
                   loop={true}
                   style={{ width: '100%', height: '100%' }}
                   className="drop-shadow-3xl"
