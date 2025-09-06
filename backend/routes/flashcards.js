@@ -2,10 +2,11 @@ import express from "express";
 import multer from "multer";
 import pdfParse from "pdf-parse";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
+import { v4 as uuidv4 } from 'uuid'; 
+import { createClient } from '@supabase/supabase-js';
 const router = express.Router();
 const upload = multer();
-
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 router.post('/generate-flashcards', upload.array('files'), async (req, res) => {
   try {
     const { session_id } = req.body;
@@ -52,8 +53,31 @@ ${combinedText}
       return res.status(502).json({ error: 'Invalid JSON format from Gemini API', raw_response: rawText });
     }
 
-    // Return flashcards JSON
-    return res.json(flashcards);
+    // Generate numeric ID for flashcard set (since DB expects bigint)
+    const flashcard_set_id = uuidv4(); 
+    
+    // Store flashcards in Supabase
+    const { error: dbError } = await supabase
+      .from('flashcards')
+      .insert({
+        session_id: session_id,
+        flashcard_set_id: flashcard_set_id,
+        flashcards: flashcards,
+        created_at: new Date().toISOString()
+      });
+
+    if (dbError) {
+      console.error('Failed to store flashcards in database:', dbError);
+      return res.status(500).json({ error: 'Failed to store flashcards in database', details: dbError.message });
+    }
+
+    // Return flashcards JSON with metadata
+    return res.json({
+      session_id: session_id,
+      flashcard_set_id: flashcard_set_id,
+      flashcards: flashcards,
+      created_at: new Date().toISOString()
+    });
   } catch (error) {
     console.error('Error generating flashcards:', error);
     return res.status(500).json({ error: 'Failed to generate flashcards' });
