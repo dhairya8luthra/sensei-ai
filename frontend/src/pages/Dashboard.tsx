@@ -14,6 +14,7 @@ import DojoSession from './DojoSession';
 import MemoryPalace from './MemoryPalace';
 import CourseAdvisor from './CourseAdvisor';
 import OraclesInsight from './OraclesInsight';
+import SenseisPath from './SenseisPath';
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -110,10 +111,7 @@ export default function Dashboard() {
         return (
           <MemoryPalace user={user} />
         );
-      case 'academy':
-        return (
-          <Academy user={user} />
-        );
+      
       case 'course-advisor':
         return (
           <CourseAdvisor user={user} />
@@ -121,6 +119,10 @@ export default function Dashboard() {
       case 'oracles-insight':
         return (
           <OraclesInsight user={user} />
+        );
+      case 'senseis-path':
+        return (
+          <SenseisPath user={user} />
         );
       case 'progress':
         return (
@@ -187,6 +189,7 @@ export default function Dashboard() {
                  activeTab === 'academy' ? 'Concept Academy' :
                  activeTab === 'course-advisor' ? 'Course Advisor' :
                  activeTab === 'oracles-insight' ? "Oracle's Insight" :
+                 activeTab === 'senseis-path' ? "Sensei's Path" :
                  activeTab}
               </h2>
               <p className="text-gray-400 text-sm">
