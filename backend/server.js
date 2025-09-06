@@ -21,7 +21,7 @@ app.use('/api', pingSupabaseRoute);
 
 // Protected API route
 app.get('/api/protected', verifySupabaseToken, (req, res) => {
-  res.json({ message: `Hello ${req.user.email}` });
+  res.json({ message: `Server is running good. Hello ${req.user.email}` });
 });
 
 app.listen(PORT, () => {
