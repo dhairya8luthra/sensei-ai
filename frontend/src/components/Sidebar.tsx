@@ -1,11 +1,13 @@
-
+import React from 'react';
 import { 
   Home, 
   BookOpen, 
   TrendingUp, 
   Users, 
   Target,
-  Torus as Torii
+  Torus as Torii,
+  GraduationCap,
+  Compass
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -16,6 +18,7 @@ interface SidebarProps {
 const sidebarItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'dojos', label: 'Study Dojos', icon: Target },
+  { id: 'course-advisor', label: 'Course Advisor', icon: Compass },
   { id: 'memory-palace', label: 'Memory Palace', icon: BookOpen },
   { id: 'progress', label: 'Progress', icon: TrendingUp },
   { id: 'community', label: 'Community', icon: Users },

@@ -31,7 +31,7 @@
   app.use('/api', generateQuiz);
   app.use('/api', dojoRoutes); 
   app.use('/api', evaluateQuiz);
-  app.use('/api', generateFlashcard);
+  app.use('/api/flashcards', generateFlashcard);
   app.use('/api', pyqAnalysis);
   app.use('/api', translatePDF);
   app.use('/api', courseRecommendation);
