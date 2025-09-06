@@ -194,8 +194,8 @@ export default function Dojos({ user }: DojosProps) {
             {paginatedDojos.map((dojo) => (
               <DojoCard
                 key={dojo.session_id}
-                dojo={dojo}
-                onStartSession={handleStartSession}
+                session={dojo}
+               onClick={() => handleStartSession(dojo.session_id)}
               />
             ))}
           </div>
