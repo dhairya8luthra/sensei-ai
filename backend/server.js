@@ -6,6 +6,7 @@ import generateQuiz from './routes/create_quiz.js';
 import dojoRoutes from './routes/dojos.js'; // Add this import
 import evaluateQuiz from './routes/evaluate_quiz.js';
 import generateFlashcard from './routes/flashcards.js';
+import pyqAnalysis from './routes/pyq_analysis.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { verifySupabaseToken } from './middleware/authMiddleware.js';
@@ -24,6 +25,7 @@ app.use('/api', generateQuiz);
 app.use('/api', dojoRoutes); 
 app.use('/api', evaluateQuiz);
 app.use('/api', generateFlashcard);
+app.use('/api', pyqAnalysis);
 // Protected API route
 app.get('/api/protected', verifySupabaseToken, (req, res) => {
   res.json({ message: `Server is running good. Hello ${req.user.email}` });
