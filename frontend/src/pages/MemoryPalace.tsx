@@ -47,7 +47,7 @@ export default function MemoryPalace({ user }: MemoryPalaceProps) {
     setError('');
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       
       // Use the new user-flashcards endpoint with pagination
       const params = new URLSearchParams({
@@ -103,7 +103,7 @@ export default function MemoryPalace({ user }: MemoryPalaceProps) {
       let errorMessage = err.message;
       
       if (err.message.includes('Failed to fetch')) {
-        errorMessage = 'Cannot connect to server. Please check if the backend is running on http://localhost:3000';
+        errorMessage = 'Cannot connect to server. Please check if the backend is running';
       } else if (err.message.includes('DOCTYPE')) {
         errorMessage = 'Server returned HTML instead of JSON. The API endpoint may not exist or there\'s a server configuration issue.';
       }
@@ -134,7 +134,7 @@ export default function MemoryPalace({ user }: MemoryPalaceProps) {
 
   const handleStartStudy = async (flashcardSetId: string) => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const url = `${backendUrl}/api/flashcards/flashcard-set/${flashcardSetId}?user_id=${user.id}`;
       console.log('Fetching flashcard set from:', url);
       
@@ -297,7 +297,7 @@ export default function MemoryPalace({ user }: MemoryPalaceProps) {
               Try again
             </button>
             <p className="text-red-300 text-xs">
-              Make sure your backend server is running on http://localhost:3000
+              Make sure your backend server is running 
             </p>
           </div>
         </div>

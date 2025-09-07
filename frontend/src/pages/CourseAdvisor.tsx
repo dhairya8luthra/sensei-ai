@@ -40,7 +40,7 @@ export default function CourseAdvisor({ user }: CourseAdvisorProps) {
   const [history, setHistory] = useState<RecommendationHistory[]>([]);
   const [sessionId] = useState(`session_${user?.id || 'anonymous'}_${Date.now()}`);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 
   useEffect(() => {
     if (user) {

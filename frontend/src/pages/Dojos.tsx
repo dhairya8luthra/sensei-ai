@@ -41,7 +41,7 @@ export default function Dojos({ user, onStartSession }: DojosProps) {
     setError('');
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${backendUrl}/api/user-sessions/${user.id}`);
       
       const data = await response.json();

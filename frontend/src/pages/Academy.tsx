@@ -36,7 +36,7 @@ export default function Academy({ user }: AcademyProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 
   useEffect(() => {
     if (user) fetchUserExplainers();
