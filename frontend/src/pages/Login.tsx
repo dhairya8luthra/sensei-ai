@@ -17,14 +17,13 @@ export default function Login() {
   // Handle OAuth callback on component mount
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { data,error } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
       
       if (data?.session) {
         // User is logged in, redirect to dashboard
         navigate('/dashboard', { replace: true });
       }
     };
-    console.log(error);
 
     // Check if there's a hash in the URL (OAuth callback)
     if (window.location.hash) {
