@@ -12,7 +12,14 @@ import RecentActivity from '../components/RecentActivity';
 import Dojos from './Dojos';
 import DojoSession from './DojoSession';
 import MemoryPalace from './MemoryPalace';
+
 import Academy from './Academy';
+
+import CourseAdvisor from './CourseAdvisor';
+import OraclesInsight from './OraclesInsight';
+import SenseisPath from './SenseisPath';
+import LanguageBridge from './LanguageBridge';
+
 import { Sparkles } from 'lucide-react';
 
 export default function Dashboard() {
@@ -109,9 +116,28 @@ export default function Dashboard() {
         return (
           <MemoryPalace user={user} />
         );
+
       case 'academy':
         return (
           <Academy user={user} />
+
+      
+      case 'course-advisor':
+        return (
+          <CourseAdvisor user={user} />
+        );
+      case 'oracles-insight':
+        return (
+          <OraclesInsight user={user} />
+        );
+      case 'senseis-path':
+        return (
+          <SenseisPath user={user} />
+        );
+      case 'language-bridge':
+        return (
+          <LanguageBridge user={user} />
+
         );
       case 'progress':
         return (
@@ -176,6 +202,12 @@ export default function Dashboard() {
                 {activeTab === 'dashboard' ? 'Dashboard' : 
                  activeTab === 'memory-palace' ? 'Memory Palace' : 
                  activeTab === 'academy' ? 'Concept Academy' :
+
+                 activeTab === 'course-advisor' ? 'Course Advisor' :
+                 activeTab === 'oracles-insight' ? "Oracle's Insight" :
+                 activeTab === 'senseis-path' ? "Sensei's Path" :
+                 activeTab === 'language-bridge' ? 'Language Bridge' :
+
                  activeTab}
               </h2>
               <p className="text-gray-400 text-sm">

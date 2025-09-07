@@ -1,6 +1,26 @@
-
 import { Link } from 'react-router-dom';
-import { Torus as Torii, Brain, Users, Trophy, BookOpen, Zap, Sparkles } from 'lucide-react';
+import { 
+  Torus as Torii, 
+  Brain, 
+  Users, 
+  Trophy, 
+  BookOpen, 
+  Zap, 
+  Sparkles,
+  Target,
+  GraduationCap,
+  Compass,
+  Eye,
+  Map,
+  Languages,
+  TrendingUp,
+  FileText,
+  Play,
+  Download,
+  Share2,
+  Clock,
+  Award
+} from 'lucide-react';
 import Lottie from 'lottie-react';
 import japaneseViewAnimation from '../data/japanseseViewAnimation.json';
 import senseiAnimation  from '../data/senseiAnimation.json';
@@ -55,8 +75,8 @@ export default function Landing() {
             
             <p className="text-lg text-gray-300 leading-relaxed max-w-2xl">
               Experience the perfect intersection of technical innovation and learning mastery. 
-              Our AI-powered micro-learning engine adapts to your competency, creating personalized 
-              quiz dojos from your PDFs and lectures.
+              Our comprehensive AI-powered learning platform transforms your study materials into 
+              personalized learning experiences with quizzes, flashcards, explainer videos, and more.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -74,13 +94,13 @@ export default function Landing() {
               </button>
             </div>
           </div>
-            <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end">
             <div className="w-[28rem] h-[28rem] lg:w-[32rem] lg:h-[32rem]">
               <Lottie 
-              animationData={senseiAnimation} 
-              loop={true}
-              style={{ width: '100%', height: '100%' }}
-              className="drop-shadow-3xl"
+                animationData={senseiAnimation} 
+                loop={true}
+                style={{ width: '100%', height: '100%' }}
+                className="drop-shadow-3xl"
               />
             </div>
           </div>
@@ -94,41 +114,55 @@ export default function Landing() {
             The Challenge We Solve
           </h3>
           <div className="bg-gradient-to-r from-emerald-950/60 to-slate-900/60 backdrop-blur-sm rounded-2xl p-12 border border-emerald-700/30">
+            <p className="text-lg text-gray-200 leading-relaxed mb-6">
+              Traditional learning methods fail to adapt to individual needs, leaving students overwhelmed 
+              with generic content and no personalized guidance. Language barriers, lack of practice materials, 
+              and absence of career direction further hinder effective learning.
+            </p>
             <p className="text-lg text-gray-200 leading-relaxed">
-              This AI-powered micro-learning engine represents the perfect intersection of technical feasibility, 
-              market impact, and innovation potential. The system leverages machine learning to infer learner 
-              competency from interactions and dynamically adapts content delivery to optimize learning outcomes 
-              while reducing fatigue.
+              Sensei AI bridges this gap with an intelligent learning ecosystem that adapts to your pace, 
+              creates personalized content from your materials, and provides comprehensive guidance for 
+              your educational journey.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Core Features Overview */}
       <section className="relative z-10 py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <h3 className="font-cinzel text-4xl font-semibold text-center text-emerald-200 mb-16">
-            Ancient Wisdom Meets AI Innovation
+            Complete Learning Ecosystem
           </h3>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="group bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-2">
               <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Brain className="w-6 h-6 text-white" />
+                <Target className="w-6 h-6 text-white" />
               </div>
-              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">AI Quiz Generation</h4>
+              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Study Dojos</h4>
               <p className="text-gray-300 leading-relaxed">
-                Transform your PDF lectures and notes into intelligent quizzes and flashcards using advanced AI algorithms.
+                Focused learning sessions with AI-generated quizzes from your PDFs and materials.
               </p>
             </div>
 
-            <div className="group bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Torii className="w-6 h-6 text-white" />
+            <div className="group bg-gradient-to-br from-purple-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-purple-700/30 hover:border-purple-500/50 transition-all duration-300 transform hover:-translate-y-2">
+              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <GraduationCap className="w-6 h-6 text-white" />
               </div>
-              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Dojo Sessions</h4>
+              <h4 className="font-cinzel text-xl font-semibold text-purple-200 mb-4">Concept Academy</h4>
               <p className="text-gray-300 leading-relaxed">
-                Enter focused learning dojos where adaptive AI creates personalized challenges based on your progress.
+                AI-powered explainer videos that transform complex concepts into engaging visual content.
+              </p>
+            </div>
+
+            <div className="group bg-gradient-to-br from-blue-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-blue-700/30 hover:border-blue-500/50 transition-all duration-300 transform hover:-translate-y-2">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Compass className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-cinzel text-xl font-semibold text-blue-200 mb-4">Course Advisor</h4>
+              <p className="text-gray-300 leading-relaxed">
+                Personalized upGrad course recommendations based on your career goals and interests.
               </p>
             </div>
 
@@ -136,40 +170,161 @@ export default function Landing() {
               <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
-              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Micro Video Lectures</h4>
+              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Memory Palace</h4>
               <p className="text-gray-300 leading-relaxed">
-                AI-generated bite-sized video content that reinforces key concepts from your study materials.
+                Spaced repetition flashcards with active recall for long-term knowledge retention.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="group bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Trophy className="w-6 h-6 text-white" />
+      {/* Advanced Features */}
+      <section className="relative z-10 py-24 px-6 bg-gradient-to-r from-slate-900/50 to-emerald-950/50">
+        <div className="max-w-7xl mx-auto">
+          <h3 className="font-cinzel text-4xl font-semibold text-center text-emerald-200 mb-16">
+            Advanced AI-Powered Tools
+          </h3>
+          
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Oracle's Insight */}
+            <div className="bg-gradient-to-br from-purple-900/40 to-indigo-900/40 backdrop-blur-sm rounded-2xl p-8 border border-purple-700/30">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center">
+                  <Eye className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-cinzel text-2xl font-semibold text-purple-200">Oracle's Insight</h4>
+                  <p className="text-purple-300">Previous Year Question Analysis</p>
+                </div>
               </div>
-              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Leaderboards</h4>
-              <p className="text-gray-300 leading-relaxed">
-                Compete with fellow learners and track your mastery across different subjects and skill levels.
+              <p className="text-gray-300 leading-relaxed mb-6">
+                Upload your previous year question papers and let our AI Oracle reveal hidden patterns, 
+                frequent topics, and generate prophetic sample papers for your preparation.
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Pattern Recognition</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Sample Papers</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Brain className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Smart Analysis</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Target className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Focus Areas</span>
+                </div>
+              </div>
             </div>
 
-            <div className="group bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-6 h-6 text-white" />
+            {/* Sensei's Path */}
+            <div className="bg-gradient-to-br from-emerald-900/40 to-green-900/40 backdrop-blur-sm rounded-2xl p-8 border border-emerald-700/30">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 bg-emerald-600 rounded-xl flex items-center justify-center">
+                  <Map className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-cinzel text-2xl font-semibold text-emerald-200">Sensei's Path</h4>
+                  <p className="text-emerald-300">Personalized Study Plans</p>
+                </div>
               </div>
-              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Adaptive Learning</h4>
-              <p className="text-gray-300 leading-relaxed">
-                Machine learning infers your competency and dynamically optimizes content delivery for maximum retention.
+              <p className="text-gray-300 leading-relaxed mb-6">
+                Let the master guide your learning journey with comprehensive study plans generated 
+                from your course materials using advanced CRAG (Corrective Retrieval Augmented Generation).
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Target className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm text-gray-300">Goal-Oriented</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm text-gray-300">Progressive Learning</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <BookOpen className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm text-gray-300">Content Analysis</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Clock className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm text-gray-300">Time Management</span>
+                </div>
+              </div>
             </div>
 
-            <div className="group bg-gradient-to-br from-emerald-900/40 to-slate-900/40 backdrop-blur-sm rounded-xl p-8 border border-emerald-700/30 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Users className="w-6 h-6 text-white" />
+            {/* Language Bridge */}
+            <div className="bg-gradient-to-br from-orange-900/40 to-red-900/40 backdrop-blur-sm rounded-2xl p-8 border border-orange-700/30">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 bg-orange-600 rounded-xl flex items-center justify-center">
+                  <Languages className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-cinzel text-2xl font-semibold text-orange-200">Language Bridge</h4>
+                  <p className="text-orange-300">Hindi Translation Service</p>
+                </div>
               </div>
-              <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-4">Community Learning</h4>
-              <p className="text-gray-300 leading-relaxed">
-                Join a community of learners, share knowledge, and grow together in the digital dojo.
+              <p className="text-gray-300 leading-relaxed mb-6">
+                Break language barriers with our AI-powered translation service that converts your 
+                English study materials to Hindi, making education accessible to all students.
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm text-gray-300">PDF Translation</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Download className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm text-gray-300">Download Support</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Brain className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm text-gray-300">Context Aware</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm text-gray-300">Inclusive Learning</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Video Generation */}
+            <div className="bg-gradient-to-br from-purple-900/40 to-emerald-900/40 backdrop-blur-sm rounded-2xl p-8 border border-purple-700/30">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-emerald-600 rounded-xl flex items-center justify-center">
+                  <Play className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-cinzel text-2xl font-semibold text-purple-200">AI Video Creation</h4>
+                  <p className="text-purple-300">Explainer Video Generation</p>
+                </div>
+              </div>
+              <p className="text-gray-300 leading-relaxed mb-6">
+                Transform complex concepts into engaging explainer videos with AI-generated slides, 
+                professional narration, and synchronized visual content for better understanding.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Slide Generation</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Play className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Voice Narration</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Download className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">PowerPoint Export</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Share2 className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-300">Easy Sharing</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -190,7 +345,7 @@ export default function Landing() {
                 </div>
                 <div>
                   <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">Upload Your Materials</h4>
-                  <p className="text-gray-300">Upload PDF lectures, notes, and study materials to begin your learning journey.</p>
+                  <p className="text-gray-300">Upload PDF lectures, notes, and study materials to begin your personalized learning journey.</p>
                 </div>
               </div>
 
@@ -199,8 +354,8 @@ export default function Landing() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">AI Analysis</h4>
-                  <p className="text-gray-300">Our AI analyzes your content and creates personalized quizzes, flashcards, and micro-lectures.</p>
+                  <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">AI Analysis & Generation</h4>
+                  <p className="text-gray-300">Our advanced AI analyzes your content and creates quizzes, flashcards, videos, translations, and study plans.</p>
                 </div>
               </div>
 
@@ -209,8 +364,8 @@ export default function Landing() {
                   3
                 </div>
                 <div>
-                  <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">Enter the Dojo</h4>
-                  <p className="text-gray-300">Practice in focused learning sessions that adapt to your performance and learning style.</p>
+                  <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">Practice & Learn</h4>
+                  <p className="text-gray-300">Engage with adaptive learning sessions, watch explainer videos, and practice with spaced repetition.</p>
                 </div>
               </div>
 
@@ -219,8 +374,8 @@ export default function Landing() {
                   4
                 </div>
                 <div>
-                  <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">Track & Compete</h4>
-                  <p className="text-gray-300">Monitor your progress on leaderboards and achieve mastery through consistent practice.</p>
+                  <h4 className="font-cinzel text-xl font-semibold text-emerald-200 mb-2">Track Progress & Achieve Mastery</h4>
+                  <p className="text-gray-300">Monitor your learning journey, get career guidance, and achieve mastery through consistent practice.</p>
                 </div>
               </div>
             </div>
@@ -233,6 +388,49 @@ export default function Landing() {
                   className="w-full h-full"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="relative z-10 py-24 px-6 bg-gradient-to-r from-emerald-950/50 to-slate-900/50">
+        <div className="max-w-6xl mx-auto">
+          <h3 className="font-cinzel text-4xl font-semibold text-center text-emerald-200 mb-16">
+            Powered by Advanced AI
+          </h3>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <h4 className="text-3xl font-bold text-emerald-400 mb-2">8+</h4>
+              <p className="text-gray-300">AI-Powered Features</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-white" />
+              </div>
+              <h4 className="text-3xl font-bold text-purple-400 mb-2">PDF</h4>
+              <p className="text-gray-300">Content Processing</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Languages className="w-8 h-8 text-white" />
+              </div>
+              <h4 className="text-3xl font-bold text-blue-400 mb-2">2</h4>
+              <p className="text-gray-300">Languages Supported</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="w-8 h-8 text-white" />
+              </div>
+              <h4 className="text-3xl font-bold text-orange-400 mb-2">100%</h4>
+              <p className="text-gray-300">Personalized Learning</p>
             </div>
           </div>
         </div>
@@ -303,11 +501,11 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gradient-to-r from-emerald-900/60 to-slate-900/60 backdrop-blur-sm rounded-2xl p-12 border border-emerald-700/30">
             <h3 className="font-cinzel text-3xl font-semibold text-emerald-200 mb-6">
-              Ready to Begin Your Learning Journey?
+              Ready to Transform Your Learning Journey?
             </h3>
             <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of learners who have discovered the power of AI-enhanced education. 
-              Start your first dojo session today.
+              Join the future of education with AI-powered personalized learning. From quiz generation 
+              to career guidance, we've got everything you need to succeed.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
