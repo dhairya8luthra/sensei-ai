@@ -5,7 +5,7 @@ import senseiAnimation from '../data/senseiAnimation.json';
 import StarryBackground from '../components/StarryBackground';
 import ScrollingParticles from '../components/ScrollingParticles';
 import Sidebar from '../components/Sidebar';
-import UserDropdown from '@/components/UserDropdown';
+import UserDropdown from '@/components/UserDropDown';
 import ActivityGraph from '../components/ActivityGraph';
 import DashboardStats from '../components/DashboardStats';
 import RecentActivity from '../components/RecentActivity';
