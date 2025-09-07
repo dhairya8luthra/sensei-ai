@@ -21,7 +21,7 @@ export default function Login() {
       
       if (data?.session) {
         // User is logged in, redirect to dashboard
-        navigate('/dashboard', { replace: true });
+        navigate('/dashboard/', { replace: true });
       }
     };
 
