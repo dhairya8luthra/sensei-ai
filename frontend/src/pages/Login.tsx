@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Torus as Torii, Mail, Lock, Chrome, ArrowLeft, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
@@ -13,6 +13,24 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Handle OAuth callback on component mount
+  useEffect(() => {
+    const handleAuthCallback = async () => {
+      const { data,error } = await supabase.auth.getSession();
+      
+      if (data?.session) {
+        // User is logged in, redirect to dashboard
+        navigate('/dashboard', { replace: true });
+      }
+    };
+    console.log(error);
+
+    // Check if there's a hash in the URL (OAuth callback)
+    if (window.location.hash) {
+      handleAuthCallback();
+    }
+  }, [navigate]);
 
   const handleEmailLogin = async () => {
     setLoading(true);
