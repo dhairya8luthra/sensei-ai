@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { Torus as Torii, Mail, Lock, User, Chrome, ArrowLeft, Sparkles } from 'lucide-react';
 import Lottie from 'lottie-react';
 import { supabase } from '@/lib/supabaseClient';
