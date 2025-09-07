@@ -120,8 +120,8 @@ export default function Dashboard() {
       case 'academy':
         return (
           <Academy user={user} />
+        );
 
-      
       case 'course-advisor':
         return (
           <CourseAdvisor user={user} />

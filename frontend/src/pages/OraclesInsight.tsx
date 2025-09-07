@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Eye, Upload, FileText, Sparkles, TrendingUp, Target, Brain, Clock, Award, BarChart3, Loader2, Download, Share2 } from 'lucide-react';
+import { Eye, Upload, FileText, Sparkles, TrendingUp, Target, Brain, Clock, Award, BarChart3, Download, Share2 } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
 

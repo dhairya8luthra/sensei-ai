@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
 import CreateExplainerModal from '../components/CreateExplainerModal';
@@ -27,7 +27,7 @@ interface AcademyProps {
 export default function Academy({ user }: AcademyProps) {
   const [explainerVideos, setExplainerVideos] = useState<ExplainerVideo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [_, setError] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [currentVideo, setCurrentVideo] = useState<ExplainerVideo | null>(null);
   const [searchTerm, setSearchTerm] = useState('');

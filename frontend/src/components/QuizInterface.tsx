@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Clock, CheckCircle, XCircle, RotateCcw, Timer, TrendingUp, BookOpen, AlertTriangle, Lightbulb, X } from 'lucide-react';
 
 interface Quiz {
@@ -19,7 +19,7 @@ interface QuizInterfaceProps {
 }
 
 export default function QuizInterface({ quizData, sessionId, onQuizComplete }: QuizInterfaceProps) {
-  const [componentError, setComponentError] = useState<string | null>(null);
+  const [_, setComponentError] = useState<string | null>(null);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});

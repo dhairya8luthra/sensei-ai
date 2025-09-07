@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Map, Upload, FileText, Target, Clock, BookOpen, Sparkles, TrendingUp, CheckCircle, ArrowRight, Loader2, Download, Share2 } from 'lucide-react';
+import { Map, Upload, FileText, Target, Clock, BookOpen, Sparkles, TrendingUp, CheckCircle, ArrowRight, Download, Share2 } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
 
@@ -26,7 +26,6 @@ export default function SenseisPath({ user }: SenseisPathProps) {
   const [loading, setLoading] = useState(false);
   const [studyPlan, setStudyPlan] = useState<StudyPlan | null>(null);
   const [error, setError] = useState('');
-  const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<StudyPlan[]>([]);
   
   const fileInputRef = useRef<HTMLInputElement>(null);

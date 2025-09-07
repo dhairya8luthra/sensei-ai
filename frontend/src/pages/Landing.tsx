@@ -2,10 +2,8 @@ import { Link } from 'react-router-dom';
 import { 
   Torus as Torii, 
   Brain, 
-  Users, 
-  Trophy, 
+  Users,  
   BookOpen, 
-  Zap, 
   Sparkles,
   Target,
   GraduationCap,

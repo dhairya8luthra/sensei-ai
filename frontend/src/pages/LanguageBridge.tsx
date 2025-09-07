@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Languages, Upload, FileText, Download, Share2, History, ArrowRight, Globe, BookOpen, Sparkles, Loader2, Copy, Check } from 'lucide-react';
+import  { useState, useRef, useEffect } from 'react';
+import { Languages, Upload, FileText, Download, Share2, History, ArrowRight, Globe, BookOpen, Sparkles, Copy, Check } from 'lucide-react';
 import Lottie from 'lottie-react';
 import senseiAnimation from '../data/senseiAnimation.json';
 

@@ -40,7 +40,7 @@ export default function MemoryPalace({ user }: MemoryPalaceProps) {
     }
   }, [user, currentPage]);
 
-  const fetchFlashcardSets = async (page = currentPage, search = searchTerm, filter = filterSource) => {
+  const fetchFlashcardSets = async (page = currentPage, _ = searchTerm, __= filterSource) => {
     if (!user) return;
     
     setLoading(true);
@@ -55,6 +55,7 @@ export default function MemoryPalace({ user }: MemoryPalaceProps) {
         limit: itemsPerPage.toString()
       });
 
+      console.log(params.toString());
       const url = `${backendUrl}/api/flashcards/user-flashcards/${user.id}`;
       console.log('Fetching flashcards from:', url);
 
