@@ -1,7 +1,7 @@
 # 🥋 Sensei AI - Ancient Wisdom, Modern Learning
 
 <div align="center">
-  <img src="https://ibb.co/ZRrWVJ5X" alt="Sensei AI Logo" width="100" height="100">
+  <img src="https://i.ibb.co/gb8z37N9/Sensei.gif" alt="Sensei AI Logo" width="100" height="100">
 
   [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-sensei--ai--phi.vercel.app-blue?style=for-the-badge)](https://sensei-ai-phi.vercel.app)
   ![Frontend](https://img.shields.io/badge/Frontend-React_+_TypeScript-61DAFB?style=for-the-badge&logo=react)
