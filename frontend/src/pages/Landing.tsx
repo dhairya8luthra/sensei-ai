@@ -17,7 +17,8 @@ import {
   Download,
   Share2,
   Clock,
-  Award
+  Award,
+  Video
 } from 'lucide-react';
 import Lottie from 'lottie-react';
 import japaneseViewAnimation from '../data/japanseseViewAnimation.json';
@@ -322,6 +323,65 @@ export default function Landing() {
                   <Share2 className="w-4 h-4 text-purple-400" />
                   <span className="text-sm text-gray-300">Easy Sharing</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Video Section */}
+      <section className="relative z-10 py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-purple-600 rounded-full flex items-center justify-center">
+                <Video className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <h3 className="font-cinzel text-4xl font-semibold text-emerald-200 mb-6">
+              See Sensei AI in Action
+            </h3>
+            <p className="text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed">
+              Watch how our AI-powered learning platform transforms your study materials into 
+              personalized learning experiences. From PDF analysis to quiz generation, 
+              see the magic happen in real-time.
+            </p>
+          </div>
+          
+          <div className="bg-gradient-to-br from-emerald-950/60 to-slate-900/60 backdrop-blur-sm rounded-2xl p-8 border border-emerald-700/30">
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              {/* YouTube iframe placeholder - replace with your actual video URL */}
+              <iframe
+                className="absolute top-0 left-0 w-full h-full rounded-xl shadow-2xl"
+                src="https://www.youtube.com/embed/inqZ7m--Aq4?si=diP3ClA8If30owxk" // Replace with your actual YouTube video ID
+                title="Sensei AI Demo"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+            <div className="mt-8 grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-white" />
+                </div>
+                <h4 className="font-cinzel text-lg font-semibold text-emerald-200 mb-2">Upload & Analyze</h4>
+                <p className="text-gray-300 text-sm">See how PDFs are processed and analyzed by our AI</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Brain className="w-8 h-8 text-white" />
+                </div>
+                <h4 className="font-cinzel text-lg font-semibold text-purple-200 mb-2">AI Generation</h4>
+                <p className="text-gray-300 text-sm">Watch quizzes and flashcards being created instantly</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                <h4 className="font-cinzel text-lg font-semibold text-blue-200 mb-2">Learn & Practice</h4>
+                <p className="text-gray-300 text-sm">Experience the interactive learning interface</p>
               </div>
             </div>
           </div>
